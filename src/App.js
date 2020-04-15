@@ -30,20 +30,27 @@ class App extends React.Component {
       this.setState({value3: event.target.value});
     }  
 
-    calc(a) {
-      const list = []
+    calc(a, b) {
+      const list1 = []
+      const list2 = []
       for(let i = 1; i <= a; i++) {
         if(a%i === 0) {
-          list.push(i)
+          list1.push(i)
         }
       }
-      return list
+      for(let i = 1; i <= b; i++) {
+        if(b%i === 0) {
+          list2.push(i)
+        }
+      }      
+      console.log(list1, list2)
+      return list1.filter(e => list2.findIndex(e1 => e1 === e) !== -1)
     }
 
     handleSubmit(event) {
       console.log(this.state.result)
       this.setState({
-        result: this.calc(this.state.value1)
+        result: this.calc(this.state.value1, this.state.value2)
       })
       event.preventDefault();
     }
