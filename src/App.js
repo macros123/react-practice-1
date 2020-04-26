@@ -30,29 +30,58 @@ class App extends React.Component {
       this.setState({value3: event.target.value});
     }  
 
-    calc(a, b) {
-      const list1 = []
-      const list2 = []
-      for(let i = 1; i <= a; i++) {
-        if(a%i === 0) {
-          list1.push(i)
-        }
-      }
-      for(let i = 1; i <= b; i++) {
-        if(b%i === 0) {
-          list2.push(i)
-        }
-      }      
-      console.log(list1, list2)
-      return list1.filter(e => list2.findIndex(e1 => e1 === e) !== -1)
-    }
 
     handleSubmit(event) {
-      console.log(this.state.result)
-      this.setState({
-        result: this.calc(this.state.value1, this.state.value2)
-      })
-      event.preventDefault();
+      function every(arr, callback) {
+        let result = [];
+        
+        for (let elem of arr) {
+          result.push( callback(elem) )
+        }
+        
+        return result;
+      }
+
+     function filter(arr, callback) {
+      let result = [];
+      
+      for (let elem of arr) {
+        if(callback(elem)) {
+          result.push( elem )
+        }
+      }
+      
+      return result;
+    }
+
+    function alternate(arr, callback1, callback2) {
+      const result = []
+      let i = 0 
+
+      for(let elem of arr) {
+        if(i % 2 === 0) {
+          result.push( callback1(elem) )
+        } else {
+          result.push( callback2(elem) ) 
+        }
+        i++
+      }
+
+      return result
+    }
+
+    let arr = [[1, 2, 3], [4, 5, 6], [7, 8, 9]];
+
+let result = every([7, 8, 9], function(elem, index) {
+	if (elem * index > 10) {
+		return true;
+	} else {
+		return false;
+	}
+});
+    
+    console.log(result);
+    event.preventDefault();
     }
   
     render() {
