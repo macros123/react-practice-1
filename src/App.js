@@ -32,55 +32,38 @@ class App extends React.Component {
 
 
     handleSubmit(event) {
-      function every(arr, callback) {
+      function getDiff(...arrs){
         let result = [];
         
-        for (let elem of arr) {
-          result.push( callback(elem) )
+        for(let i = 0; i < arrs.length - 1; i++) {
+          let diff1 = getFirstDiff(arrs[i], arrs[i+1]);
+          let diff2 = getFirstDiff(arrs[i+1], arrs[i]);
+          result = result.concat( diff1, diff2)
+        }
+        
+        return result
+      }
+      
+      function getFirstDiff(arr1, arr2){
+        let result = [];
+        
+        for (let elem of arr1) {
+          if (!inArray(elem, arr2)) {
+            result.push(elem);
+          }
         }
         
         return result;
       }
-
-     function filter(arr, callback) {
-      let result = [];
       
-      for (let elem of arr) {
-        if(callback(elem)) {
-          result.push( elem )
-        }
-      }
-      
-      return result;
-    }
-
-    function alternate(arr, callback1, callback2) {
-      const result = []
-      let i = 0 
-
-      for(let elem of arr) {
-        if(i % 2 === 0) {
-          result.push( callback1(elem) )
-        } else {
-          result.push( callback2(elem) ) 
-        }
-        i++
+      function inArray(elem, arr){
+        return arr.indexOf(elem) !== -1;
       }
 
-      return result
-    }
+      let result = getDiff([1, 2, 3, 5], [2, 3, 4], [4, 3, 2, 6]);
+      console.log(result); // выведет [2, 3]
 
-    let arr = [[1, 2, 3], [4, 5, 6], [7, 8, 9]];
 
-let result = every([7, 8, 9], function(elem, index) {
-	if (elem * index > 10) {
-		return true;
-	} else {
-		return false;
-	}
-});
-    
-    console.log(result);
     event.preventDefault();
     }
   
