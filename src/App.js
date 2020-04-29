@@ -1,76 +1,61 @@
 import React from 'react';
 import './App.css';
 
-const days = []
-for(let i = 0 ; i < 31; i++) {
-  days.push(i+1)
-}
-const month = []
-for(let i = 0 ; i < 12; i++) {
-  month.push(i+1)
-}
-const year = []
-for(let i = 1990 ; i < 2020; i++) {
-  year.push(i+1)
-}
-const date = new Date()
-const dayOfWeeks = ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота']
 class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      input1: date.getDate(),
-      input2: date.getMonth() + 1,
-      input3: date.getFullYear(),
-      result: dayOfWeeks[date.getDay()]
+      users: [
+        {name: 'Коля', surname: 'Иванов', age: 30},
+        {name: 'Вася', surname: 'Петров', age: 40},
+        {name: 'Петя', surname: 'Сидоров', age: 50},
+      ]
     };
   }
- 
-  changeTextHandler(event) {
-    const tmp = this.state
-    if(event.target.name === 'select1'){
-      const tmpDate = new Date(tmp.input3, tmp.input2 - 1, event.target.value).getDay()
-      this.setState({
-        input1: event.target.value,
-        result: dayOfWeeks[tmpDate]
-      })
-    } 
-    if(event.target.name === 'select2'){
-      const tmpDate = new Date(tmp.input3, event.target.value - 1, tmp.input1).getDay()
-      this.setState({
-        input2: event.target.value,
-        result: dayOfWeeks[tmpDate]
-      })
-    }
-    if(event.target.name === 'select3'){
-      const tmpDate = new Date(event.target.value, tmp.input2 - 1, tmp.input1).getDay()
-      this.setState({
-        input3: event.target.value,
-        result: dayOfWeeks[tmpDate]
-      })
-    }
-      
-    
-  }
+     
+  deleteUser(index) {
+    this.state.users.splice(index, 1)
+    this.setState({
+      users: this.state.users
+    })
+  }  
+  
   render() {
-    const options1 = days.map((e, i) => <option key={i}>{e}</option>)
-    const options2 = month.map((e, i) => <option key={i}>{e}</option>)
-    const options3 = year.map((e, i) => <option key={i}>{e}</option>)
+    const users = this.state.users.map((e, i) => <User 
+      name={e.name} 
+      surname={e.surname} 
+      age={e.age} 
+      key={i} 
+      deleteUser={this.deleteUser.bind(this)}
+      index={i}
+    />)
     return (
       <div className='block'>
-        <select name='select1' value={this.state.input1} onChange={this.changeTextHandler.bind(this)}>
-        {options1}
-        </select>
-        <select name='select2' value={this.state.input2} onChange={this.changeTextHandler.bind(this)}>
-        {options2}
-        </select>
-        <select name='select3' value={this.state.input3} onChange={this.changeTextHandler.bind(this)}>
-        {options3}
-        </select>
-    <p>{this.state.result}</p>
+        <table>
+          <tr>
+            <th>Имя</th>
+            <th>Фамилия</th>
+            <th>Возраст</th>
+            <th>Удалить</th>
+          </tr>          
+        {users}
+        </table>
     </div>
     )
   }   
+}
+
+class User extends React.Component {
+  render() {
+    return (
+      <tr>
+        <td>{this.props.name}</td>
+        <td>{this.props.surname}</td>
+        <td>{this.props.age}</td>
+        <td><button onClick={this.props.deleteUser.bind(null, this.props.index)}>Удалить</button></td>
+      </tr>
+    )
+  }
 }
 
 export default App;
