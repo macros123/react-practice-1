@@ -5,55 +5,72 @@ class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      users: [
-        {name: 'Коля', surname: 'Иванов', age: 30},
-        {name: 'Вася', surname: 'Петров', age: 40},
-        {name: 'Петя', surname: 'Сидоров', age: 50},
-      ]
+      users: ['Коля', 'Вася', 'Петя']
     };
   }
      
-  deleteUser(index) {
-    this.state.users.splice(index, 1)
+  changeUserName(value, index) {
+    const tmp = this.state.users
+    tmp[index] = value
     this.setState({
-      users: this.state.users
+      users: tmp
     })
   }  
   
   render() {
-    const users = this.state.users.map((e, i) => <User 
-      name={e.name} 
-      surname={e.surname} 
-      age={e.age} 
-      key={i} 
-      deleteUser={this.deleteUser.bind(this)}
-      index={i}
-    />)
+      
     return (
       <div className='block'>
-        <table>
-          <tr>
-            <th>Имя</th>
-            <th>Фамилия</th>
-            <th>Возраст</th>
-            <th>Удалить</th>
-          </tr>          
-        {users}
-        </table>
+        <User users={this.state.users} changeUserName={this.changeUserName.bind(this)}/>        
     </div>
     )
   }   
 }
 
 class User extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      changing: new Array(this.props.users.length).fill(false),
+      changingValue: ''
+    };
+  }
+
+  finishChanging(i, event ) {
+    const tmp = this.state.changing
+    tmp[i] = !tmp[i]
+    this.setState({
+      changing: tmp,
+      changingValue: event.target.value
+    })
+  }
+  initChanging(i, event) {
+    const tmp = this.state.changing
+    tmp[i] = !tmp[i]
+    this.setState({
+      changing: tmp,
+      changingValue: this.props.users[i]
+    })
+  }
+
+  changing(event) {
+    this.setState({
+      changingValue: event.target.value
+    })
+    console.log(this.state.changing)
+    this.props.changeUserName(event.target.value, this.state.changing.indexOf(true))
+  }
+
   render() {
+    const userList = this.props.users.map((e, i) => <li key={i}>{e} {this.state.changing[i] ? <input 
+    type='text' 
+    value={this.state.changing[i] ? this.state.changingValue : this.props.users[i]} 
+    //onFocus={this.finishChanging.bind(this, i)}
+    onBlur={this.finishChanging.bind(this, i)}
+    onChange={this.changing.bind(this)} /> : null}
+    <a  onClick={this.initChanging.bind(this, i)}>{this.state.changing[i] ? null : 'Редактировать' }</a></li>)
     return (
-      <tr>
-        <td>{this.props.name}</td>
-        <td>{this.props.surname}</td>
-        <td>{this.props.age}</td>
-        <td><button onClick={this.props.deleteUser.bind(null, this.props.index)}>Удалить</button></td>
-      </tr>
+      <ul>{userList}</ul>
     )
   }
 }
